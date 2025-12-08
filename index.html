@@ -480,7 +480,7 @@
                     .then(response => response.json())
                     .then(data => {
                         // Convert the object to array format
-                        const keys = Object.keys(data);
+                        const keys = Object.keys(data.data);
                         ouiData = keys.map(key => ({
                             prefix: key,
                             name: data[key]
