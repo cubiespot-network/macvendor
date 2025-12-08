@@ -16,16 +16,13 @@
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
             color: #333;
         }
 
         .container {
-            width: 100%;
-            max-width: 900px;
+            max-width: 1100px;
+            margin: 0 auto;
             background-color: white;
             border-radius: 20px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
@@ -37,19 +34,12 @@
             background: linear-gradient(to right, #1a6dcc, #0d4d9c);
             color: white;
             padding: 28px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .header-content {
-            flex: 1;
         }
 
         .header h1 {
             font-size: 28px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -63,20 +53,6 @@
             font-size: 16px;
             opacity: 0.9;
             line-height: 1.5;
-            max-width: 650px;
-        }
-
-        .wireshark-logo {
-            width: 70px;
-            height: 70px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            margin-left: 20px;
-            flex-shrink: 0;
         }
 
         .content {
@@ -97,12 +73,10 @@
 
         .search-container {
             position: relative;
-            display: flex;
-            gap: 12px;
         }
 
         .search-input {
-            flex: 1;
+            width: 100%;
             padding: 18px 20px;
             padding-left: 52px;
             border: 2px solid #e1e8f0;
@@ -110,6 +84,9 @@
             font-size: 16px;
             transition: all 0.3s;
             background-color: #f8fafc;
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
         }
 
         .search-input:focus {
@@ -122,35 +99,9 @@
         .search-icon {
             position: absolute;
             left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 20px;
             color: #94a3b8;
             font-size: 20px;
-        }
-
-        .search-btn {
-            background: linear-gradient(to right, #1a6dcc, #0d4d9c);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 0 28px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(26, 109, 204, 0.3);
-        }
-
-        .search-btn:active {
-            transform: translateY(0);
         }
 
         .search-hint {
@@ -160,14 +111,24 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .search-hint i {
             color: #1a6dcc;
         }
 
+        .search-hint .tag {
+            background-color: #e8f2ff;
+            color: #1a6dcc;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
         .results-section {
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         .results-header {
@@ -195,7 +156,7 @@
         .results-container {
             background-color: #f8fafc;
             border-radius: 12px;
-            min-height: 200px;
+            min-height: 100px;
             padding: 24px;
             border: 2px solid #e1e8f0;
             transition: all 0.3s;
@@ -235,13 +196,19 @@
         }
 
         .results-table.active {
-            display: table;
+            display: block;
         }
 
         .result-row {
             border-bottom: 1px solid #e1e8f0;
             padding: 16px 0;
             display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .result-row:hover {
+            background-color: rgba(26, 109, 204, 0.05);
         }
 
         .result-row:last-child {
@@ -249,16 +216,40 @@
         }
 
         .result-prefix {
-            width: 200px;
-            font-weight: 600;
+            width: 180px;
+            font-weight: 700;
             color: #1a6dcc;
             font-family: 'Courier New', monospace;
-            font-size: 16px;
+            font-size: 15px;
+            flex-shrink: 0;
         }
 
         .result-vendor {
             flex: 1;
             font-size: 16px;
+            padding-left: 20px;
+        }
+
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #1a6dcc;
+        }
+
+        .loading-indicator.active {
+            display: block;
+        }
+
+        .loading-indicator i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .examples {
@@ -280,7 +271,7 @@
 
         .examples-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 14px;
         }
 
@@ -304,6 +295,7 @@
             font-weight: 600;
             color: #1a6dcc;
             margin-bottom: 6px;
+            font-size: 14px;
         }
 
         .example-vendor {
@@ -330,34 +322,53 @@
             text-decoration: underline;
         }
 
+        .empty-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-results i {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
         @media (max-width: 768px) {
+            .container {
+                border-radius: 15px;
+            }
+            
             .header {
-                flex-direction: column;
-                text-align: center;
                 padding: 24px 20px;
             }
             
-            .wireshark-logo {
-                margin-left: 0;
-                margin-top: 16px;
+            .content {
+                padding: 24px;
             }
             
-            .search-container {
-                flex-direction: column;
-            }
-            
-            .search-btn {
-                padding: 18px;
-                justify-content: center;
+            .search-input {
+                min-height: 100px;
             }
             
             .result-row {
                 flex-direction: column;
+                align-items: flex-start;
                 gap: 8px;
             }
             
             .result-prefix {
                 width: 100%;
+                padding-bottom: 5px;
+                border-bottom: 1px dashed #e1e8f0;
+            }
+            
+            .result-vendor {
+                padding-left: 0;
+                width: 100%;
+            }
+            
+            .examples-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -365,41 +376,43 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-content">
-                <h1><i class="fas fa-search"></i> OUI Lookup Tool</h1>
-                <p>Easily search for vendor information using Organizationally Unique Identifiers (OUIs). Find manufacturer details for any MAC address.</p>
-            </div>
-            <div class="wireshark-logo">
-                <i class="fas fa-satellite-dish"></i>
-            </div>
+            <h1><i class="fas fa-search"></i> Wireshark OUI Lookup Tool</h1>
+            <p>Instantly search for vendor information using Organizationally Unique Identifiers (OUIs). Enter multiple MAC addresses or vendor names (one per line).</p>
         </div>
         
         <div class="content">
             <div class="search-section">
-                <label class="search-label" for="searchInput">Enter MAC Address or Vendor Name</label>
+                <label class="search-label" for="searchInput">Enter MAC Addresses or Vendor Names</label>
                 <div class="search-container">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="searchInput" class="search-input" placeholder="e.g., 00:0C:29, Apple, Cisco, or enter multiple MACs separated by commas">
-                    <button id="searchBtn" class="search-btn">
-                        <i class="fas fa-search"></i> Search
-                    </button>
+                    <textarea id="searchInput" class="search-input" placeholder=""></textarea>
                 </div>
                 <div class="search-hint">
                     <i class="fas fa-lightbulb"></i>
-                    <span>Supports MAC formats: 00:0C:29, 00-0C-29, 000C29, and vendor name searches</span>
+                    <span>Supports: </span>
+                    <span class="tag">00:0C:29</span>
+                    <span class="tag">00-0C-29</span>
+                    <span class="tag">000C29</span>
+                    <span class="tag">Vendor Names</span>
+                    <span class="tag">Multiple Entries</span>
                 </div>
             </div>
             
             <div class="results-section">
                 <div class="results-header">
                     <h3>Search Results</h3>
-                    <div class="results-count" id="resultsCount">0 matches</div>
+                    <div class="results-count" id="resultsCount">Ready</div>
                 </div>
                 <div class="results-container" id="resultsContainer">
+                    <div class="loading-indicator" id="loadingIndicator">
+                        <i class="fas fa-circle-notch"></i>
+                        <p>Loading OUI database...</p>
+                    </div>
+                    
                     <div class="results-placeholder" id="resultsPlaceholder">
                         <i class="fas fa-network-wired"></i>
-                        <h4>No Search Yet</h4>
-                        <p>Enter a MAC address or vendor name above to search the OUI database. Try examples below or enter your own query.</p>
+                        <h4>Database Loaded</h4>
+                        <p>Start typing MAC addresses or vendor names above. Results will appear instantly as you type.</p>
                     </div>
                     
                     <div class="results-table" id="resultsTable">
@@ -409,23 +422,31 @@
             </div>
             
             <div class="examples">
-                <h4><i class="fas fa-bolt"></i> Try These Examples</h4>
+                <h4><i class="fas fa-bolt"></i> Quick Examples</h4>
                 <div class="examples-grid">
                     <div class="example-item" data-mac="00:0C:29">
                         <div class="example-mac">00:0C:29</div>
                         <div class="example-vendor">VMware, Inc.</div>
                     </div>
+                    <div class="example-item" data-mac="Apple">
+                        <div class="example-mac">Apple</div>
+                        <div class="example-vendor">Apple, Inc.</div>
+                    </div>
+                    <div class="example-item" data-mac="Vivo">
+                        <div class="example-mac">Vivo</div>
+                        <div class="example-vendor">Vivo Mobile Communication</div>
+                    </div>
+                    <div class="example-item" data-mac="Shenzhen">
+                        <div class="example-mac">Shenzhen</div>
+                        <div class="example-vendor">Various Shenzhen companies</div>
+                    </div>
                     <div class="example-item" data-mac="3C:D9:2B">
                         <div class="example-mac">3C:D9:2B</div>
                         <div class="example-vendor">Hewlett Packard</div>
                     </div>
-                    <div class="example-item" data-mac="Apple">
-                        <div class="example-mac">Apple</div>
-                        <div class="example-vendor">Search by vendor name</div>
-                    </div>
                     <div class="example-item" data-mac="Cisco">
                         <div class="example-mac">Cisco</div>
-                        <div class="example-vendor">Search by vendor name</div>
+                        <div class="example-vendor">Cisco Systems, Inc.</div>
                     </div>
                 </div>
             </div>
@@ -439,33 +460,38 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
-            const searchBtn = document.getElementById('searchBtn');
             const resultsPlaceholder = document.getElementById('resultsPlaceholder');
             const resultsTable = document.getElementById('resultsTable');
             const resultsCount = document.getElementById('resultsCount');
+            const loadingIndicator = document.getElementById('loadingIndicator');
             const exampleItems = document.querySelectorAll('.example-item');
             
             let ouiData = [];
             let isLoading = false;
+            let searchTimeout = null;
             
             // Initialize the tool
             function init() {
                 console.log('Loading OUI database...');
                 loadOUIData();
                 
-                // Set up event listeners
-                searchBtn.addEventListener('click', performSearch);
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        performSearch();
+                // Set up input event listener for real-time search
+                searchInput.addEventListener('input', function() {
+                    // Clear previous timeout
+                    if (searchTimeout) {
+                        clearTimeout(searchTimeout);
                     }
+                    
+                    // Set a new timeout to avoid too frequent searches
+                    searchTimeout = setTimeout(performSearch, 300);
                 });
                 
                 // Set up example click handlers
                 exampleItems.forEach(item => {
                     item.addEventListener('click', function() {
                         const mac = this.getAttribute('data-mac');
-                        searchInput.value = mac;
+                        searchInput.value = mac + '\n';
+                        searchInput.focus();
                         performSearch();
                     });
                 });
@@ -474,6 +500,9 @@
             // Load OUI data from Wireshark
             function loadOUIData() {
                 isLoading = true;
+                loadingIndicator.classList.add('active');
+                resultsPlaceholder.style.display = 'none';
+                
                 const url = 'https://www.wireshark.org/json/manuf.json';
                 
                 fetch(url)
@@ -491,13 +520,21 @@
                         
                         console.log(`Loaded ${ouiData.length} OUI entries`);
                         isLoading = false;
+                        loadingIndicator.classList.remove('active');
+                        resultsPlaceholder.style.display = 'flex';
                         
                         // Show a welcome message
                         showWelcomeMessage();
+                        
+                        // If there's already text in the input, search immediately
+                        if (searchInput.value.trim()) {
+                            performSearch();
+                        }
                     })
                     .catch(error => {
                         console.error('Error loading OUI data:', error);
                         isLoading = false;
+                        loadingIndicator.classList.remove('active');
                         
                         // Show error message
                         resultsPlaceholder.innerHTML = `
@@ -505,6 +542,7 @@
                             <h4>Error Loading Data</h4>
                             <p>Could not load OUI database. Please check your connection and try again.</p>
                         `;
+                        resultsPlaceholder.style.display = 'flex';
                     });
             }
             
@@ -513,7 +551,7 @@
                 resultsPlaceholder.innerHTML = `
                     <i class="fas fa-database" style="color: #1a6dcc;"></i>
                     <h4>OUI Database Ready</h4>
-                    <p>Loaded ${ouiData.length.toLocaleString()} vendor prefixes. Enter a MAC address or vendor name to search.</p>
+                    <p>Loaded ${ouiData.length.toLocaleString()} vendor prefixes. Start typing MAC addresses or vendor names above.</p>
                 `;
                 resultsCount.textContent = `${ouiData.length.toLocaleString()} entries loaded`;
             }
@@ -528,15 +566,25 @@
                 const query = searchInput.value.trim();
                 
                 if (!query) {
-                    showMessage('Please enter a MAC address or vendor name to search.', 'warning');
+                    showWelcomeMessage();
+                    resultsTable.classList.remove('active');
+                    resultsPlaceholder.style.display = 'flex';
                     return;
                 }
                 
-                // Parse the query
-                const queries = query.split(',').map(q => q.trim()).filter(q => q);
+                // Parse the query - split by new lines
+                const queries = query.split('\n')
+                    .map(q => q.trim())
+                    .filter(q => q.length > 0);
+                
+                if (queries.length === 0) {
+                    showWelcomeMessage();
+                    return;
+                }
                 
                 // Search for matches
                 const matches = [];
+                const processedPrefixes = new Set();
                 
                 queries.forEach(q => {
                     // Check if it's a MAC address
@@ -544,43 +592,59 @@
                     const cleanMac = q.replace(/[:.-]/g, '').toLowerCase();
                     
                     if (macRegex.test(q)) {
-                        // Search by MAC prefix
+                        // Search by MAC prefix - find all prefixes that match
                         ouiData.forEach(entry => {
                             const entryPrefix = entry.prefix.toLowerCase();
+                            // Match if the query is a prefix of the entry, or the entry is a prefix of the query
                             if (cleanMac.startsWith(entryPrefix) || entryPrefix.startsWith(cleanMac)) {
-                                matches.push(entry);
+                                if (!processedPrefixes.has(entry.prefix)) {
+                                    matches.push({
+                                        ...entry,
+                                        searchTerm: q,
+                                        matchType: 'mac'
+                                    });
+                                    processedPrefixes.add(entry.prefix);
+                                }
                             }
                         });
                     } else {
-                        // Search by vendor name
-                        const vendorRegex = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+                        // Search by vendor name - case insensitive
+                        const searchLower = q.toLowerCase();
                         ouiData.forEach(entry => {
-                            if (vendorRegex.test(entry.name)) {
-                                matches.push(entry);
+                            if (entry.name.toLowerCase().includes(searchLower)) {
+                                if (!processedPrefixes.has(entry.prefix)) {
+                                    matches.push({
+                                        ...entry,
+                                        searchTerm: q,
+                                        matchType: 'vendor'
+                                    });
+                                    processedPrefixes.add(entry.prefix);
+                                }
                             }
                         });
                     }
                 });
                 
-                // Remove duplicates
-                const uniqueMatches = Array.from(new Set(matches.map(m => m.prefix)))
-                    .map(prefix => matches.find(m => m.prefix === prefix));
-                
                 // Display results
-                displayResults(uniqueMatches, queries);
+                displayResults(matches, queries);
             }
             
             // Display search results
             function displayResults(matches, queries) {
                 if (matches.length === 0) {
-                    resultsPlaceholder.style.display = 'flex';
+                    resultsPlaceholder.style.display = 'none';
                     resultsTable.classList.remove('active');
                     
-                    resultsPlaceholder.innerHTML = `
-                        <i class="fas fa-search" style="color: #94a3b8;"></i>
-                        <h4>No Matches Found</h4>
-                        <p>No vendor information found for "${queries.join(', ')}". Try a different MAC address or vendor name.</p>
+                    // Create empty results message
+                    resultsTable.innerHTML = `
+                        <div class="empty-results">
+                            <i class="fas fa-search" style="color: #94a3b8;"></i>
+                            <h4>No Matches Found</h4>
+                            <p>No vendor information found for your search terms.</p>
+                            <p style="margin-top: 10px; font-size: 14px;">You searched for: <strong>${queries.join(', ')}</strong></p>
+                        </div>
                     `;
+                    resultsTable.classList.add('active');
                     
                     resultsCount.textContent = '0 matches';
                     return;
@@ -593,6 +657,16 @@
                 // Clear previous results
                 resultsTable.innerHTML = '';
                 
+                // Sort matches: exact MAC matches first, then vendor matches
+                matches.sort((a, b) => {
+                    // Sort by match type first
+                    if (a.matchType === 'mac' && b.matchType !== 'mac') return -1;
+                    if (a.matchType !== 'mac' && b.matchType === 'mac') return 1;
+                    
+                    // Then sort by prefix
+                    return a.prefix.localeCompare(b.prefix);
+                });
+                
                 // Add results
                 matches.forEach(match => {
                     const row = document.createElement('div');
@@ -602,17 +676,24 @@
                     let formattedPrefix = match.prefix;
                     if (formattedPrefix.length === 6) {
                         // Format as 00:00:00
-                        formattedPrefix = formattedPrefix.replace(/(.{2})/g, '$1:').slice(0, -1);
+                        formattedPrefix = formattedPrefix.match(/.{1,2}/g).join(':').toUpperCase();
                     } else if (formattedPrefix.length === 7) {
                         // Format as 00:00:00:00/28
-                        formattedPrefix = formattedPrefix.replace(/(.{2})/g, '$1:').slice(0, -1) + '0:00:00/28';
+                        formattedPrefix = formattedPrefix.match(/.{1,2}/g).join(':').toUpperCase() + '0:00:00/28';
                     } else if (formattedPrefix.length === 9) {
                         // Format as 00:00:00:00:00/36
-                        formattedPrefix = formattedPrefix.replace(/(.{2})/g, '$1:').slice(0, -1) + '0:00/36';
+                        formattedPrefix = formattedPrefix.match(/.{1,2}/g).join(':').toUpperCase() + '0:00/36';
+                    } else {
+                        formattedPrefix = formattedPrefix.toUpperCase();
                     }
                     
+                    // Add match indicator
+                    const matchIndicator = match.matchType === 'mac' 
+                        ? `<span style="font-size: 12px; background-color: #e8f2ff; color: #1a6dcc; padding: 2px 8px; border-radius: 4px; margin-left: 10px;">MAC</span>`
+                        : `<span style="font-size: 12px; background-color: #f0f9ff; color: #0d4d9c; padding: 2px 8px; border-radius: 4px; margin-left: 10px;">Vendor</span>`;
+                    
                     row.innerHTML = `
-                        <div class="result-prefix">${formattedPrefix.toUpperCase()}</div>
+                        <div class="result-prefix">${formattedPrefix} ${matchIndicator}</div>
                         <div class="result-vendor">${match.name}</div>
                     `;
                     
@@ -620,7 +701,7 @@
                 });
                 
                 // Update count
-                resultsCount.textContent = `${matches.length} match${matches.length !== 1 ? 'es' : ''}`;
+                resultsCount.textContent = `${matches.length} match${matches.length !== 1 ? 'es' : ''} found`;
                 
                 // Change container style when results are shown
                 const resultsContainer = document.getElementById('resultsContainer');
