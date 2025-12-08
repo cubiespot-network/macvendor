@@ -1,72 +1,680 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireshark OUI Lookup Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
 
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e1e8f0;
+        }
+
+        .header {
+            background: linear-gradient(to right, #1a6dcc, #0d4d9c);
+            color: white;
+            padding: 28px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1 i {
+            font-size: 26px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+            line-height: 1.5;
+            max-width: 650px;
+        }
+
+        .wireshark-logo {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-left: 20px;
+            flex-shrink: 0;
+        }
+
+        .content {
+            padding: 32px;
+        }
+
+        .search-section {
+            margin-bottom: 30px;
+        }
+
+        .search-label {
+            display: block;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            gap: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 18px 20px;
+            padding-left: 52px;
+            border: 2px solid #e1e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: #f8fafc;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #1a6dcc;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(26, 109, 204, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 20px;
+        }
+
+        .search-btn {
+            background: linear-gradient(to right, #1a6dcc, #0d4d9c);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0 28px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(26, 109, 204, 0.3);
+        }
+
+        .search-btn:active {
+            transform: translateY(0);
+        }
+
+        .search-hint {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-hint i {
+            color: #1a6dcc;
+        }
+
+        .results-section {
+            margin-top: 20px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .results-header h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .results-count {
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .results-container {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            min-height: 200px;
+            padding: 24px;
+            border: 2px solid #e1e8f0;
+            transition: all 0.3s;
+        }
+
+        .results-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #94a3b8;
+        }
+
+        .results-placeholder i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .results-placeholder h4 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .results-placeholder p {
+            font-size: 15px;
+            text-align: center;
+            max-width: 400px;
+            line-height: 1.5;
+        }
+
+        .results-table {
+            width: 100%;
+            display: none;
+        }
+
+        .results-table.active {
+            display: table;
+        }
+
+        .result-row {
+            border-bottom: 1px solid #e1e8f0;
+            padding: 16px 0;
+            display: flex;
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-prefix {
+            width: 200px;
+            font-weight: 600;
+            color: #1a6dcc;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+        }
+
+        .result-vendor {
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .examples {
+            margin-top: 30px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .examples h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 14px;
+        }
+
+        .example-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 14px 18px;
+            border: 1px solid #e1e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-item:hover {
+            border-color: #1a6dcc;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .example-mac {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #1a6dcc;
+            margin-bottom: 6px;
+        }
+
+        .example-vendor {
+            font-size: 14px;
+            color: #475569;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-top: 1px solid #e1e8f0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #1a6dcc;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 24px 20px;
+            }
+            
+            .wireshark-logo {
+                margin-left: 0;
+                margin-top: 16px;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                padding: 18px;
+                justify-content: center;
+            }
+            
+            .result-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .result-prefix {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
 <body>
-    <div class="p-8 undefined border border-border-card">
-        <section>
-            <div class="flex flex-col gap-4">
-                <h3 class="heading"> OUI Lookup Tool </h3>
-                <p class="paragraph text-text undefined size-sm">
-                    Easily search for vendor information using Organizationally Unique
-                    Identifiers (OUIs).
-                </p> <br> <label for="ffentry" data-astro-cid-aclj2cu6="true" class="relative flex flex-col gap-3 w-full label text-base text-text color-brighter" data-astro-cid-vbro6cyj="true"> <textarea id="ffentry" name="Search" placeholder="Search" type="text" data-astro-cid-aclj2cu6="true" class="input-input border border-border px-4 py-3 text-text placeholder:text-action-disabled-text disabled:bg-action-disabled disabled:border-action-disabled-text disabled:text-action-disabled-text rounded-lg"></textarea> </label>
-                <p class="paragraph text-text undefined size-md" id="matches" style="white-space: pre-line"> <i>No matches</i> </p>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-search"></i> OUI Lookup Tool</h1>
+                <p>Easily search for vendor information using Organizationally Unique Identifiers (OUIs). Find manufacturer details for any MAC address.</p>
             </div>
-        </section>
-        <script type="module">
-            window.addEventListener("load", () => {
-                const u = "https://www.wireshark.org/json/manuf.json";
-                let i;
-                const f = function(t) {
-                        let n;
-                        return t = t.toLowerCase(), (n = /^[0-9a-f]{2}(?:[:.-]?[0-9a-f]{2}){2,7}$/.exec(t)) ? n[0].replace(/[:.-]/g, "") : null
-                    },
-                    l = function(t, n) {
-                        var s = t.length,
-                            o = t.replace(/../g, "$&:").replace(/:$/, "").toUpperCase();
-                        return s == 9 ? o += "0:00/36" : s == 7 && (o += "0:00:00/28"), o += " " + n, o
-                    },
-                    p = function() {
-                        const n = document.getElementById("ffentry").value.split(`
-`);
-                        var s = [],
-                            o = [],
-                            a;
-                        n.forEach(function(e) {
-                            e = e.replace(/^\s+|\s+$/g, "");
-                            var c = f(e);
-                            c ? s.push(c) : e && o.push(e)
-                        }), o.length && (a = new RegExp(o.map(function(e) {
-                            return e = e.replace(/[\^$\\.*+?()\[\]{}|]/g, "\\$&"), "(?:" + e + ")"
-                        }).join("|"), "i"));
-                        var d = i.filter(function(e) {
-                            return s.some(function(c) {
-                                return c.substring(0, e.prefix.length) === e.prefix.substring(0, c.length)
-                            }) || a && a.test(e.name)
-                        }).map(function(e) {
-                            return l(e.prefix, e.name)
-                        });
-                        n[0].length === 0 && (document.getElementById("matches").textContent = "(no matches)"), n[0].length > 0 && (document.getElementById("matches").textContent = d.join(`
-`) || "(no matches)")
-                    },
-                    m = function(t) {
-                        var n = t.data,
-                            s = Object.keys(n);
-                        s.sort(), i = s.map(function(a) {
-                            return {
-                                prefix: a,
-                                name: n[a]
+            <div class="wireshark-logo">
+                <i class="fas fa-satellite-dish"></i>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="search-section">
+                <label class="search-label" for="searchInput">Enter MAC Address or Vendor Name</label>
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="e.g., 00:0C:29, Apple, Cisco, or enter multiple MACs separated by commas">
+                    <button id="searchBtn" class="search-btn">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+                <div class="search-hint">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>Supports MAC formats: 00:0C:29, 00-0C-29, 000C29, and vendor name searches</span>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div class="results-header">
+                    <h3>Search Results</h3>
+                    <div class="results-count" id="resultsCount">0 matches</div>
+                </div>
+                <div class="results-container" id="resultsContainer">
+                    <div class="results-placeholder" id="resultsPlaceholder">
+                        <i class="fas fa-network-wired"></i>
+                        <h4>No Search Yet</h4>
+                        <p>Enter a MAC address or vendor name above to search the OUI database. Try examples below or enter your own query.</p>
+                    </div>
+                    
+                    <div class="results-table" id="resultsTable">
+                        <!-- Results will be inserted here dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="examples">
+                <h4><i class="fas fa-bolt"></i> Try These Examples</h4>
+                <div class="examples-grid">
+                    <div class="example-item" data-mac="00:0C:29">
+                        <div class="example-mac">00:0C:29</div>
+                        <div class="example-vendor">VMware, Inc.</div>
+                    </div>
+                    <div class="example-item" data-mac="3C:D9:2B">
+                        <div class="example-mac">3C:D9:2B</div>
+                        <div class="example-vendor">Hewlett Packard</div>
+                    </div>
+                    <div class="example-item" data-mac="Apple">
+                        <div class="example-mac">Apple</div>
+                        <div class="example-vendor">Search by vendor name</div>
+                    </div>
+                    <div class="example-item" data-mac="Cisco">
+                        <div class="example-mac">Cisco</div>
+                        <div class="example-vendor">Search by vendor name</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Powered by <a href="https://www.wireshark.org/tools/oui-lookup.html" target="_blank">Wireshark OUI Database</a> • Data is fetched from Wireshark's official repository</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const resultsPlaceholder = document.getElementById('resultsPlaceholder');
+            const resultsTable = document.getElementById('resultsTable');
+            const resultsCount = document.getElementById('resultsCount');
+            const exampleItems = document.querySelectorAll('.example-item');
+            
+            let ouiData = [];
+            let isLoading = false;
+            
+            // Initialize the tool
+            function init() {
+                console.log('Loading OUI database...');
+                loadOUIData();
+                
+                // Set up event listeners
+                searchBtn.addEventListener('click', performSearch);
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performSearch();
+                    }
+                });
+                
+                // Set up example click handlers
+                exampleItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        const mac = this.getAttribute('data-mac');
+                        searchInput.value = mac;
+                        performSearch();
+                    });
+                });
+            }
+            
+            // Load OUI data from Wireshark
+            function loadOUIData() {
+                isLoading = true;
+                const url = 'https://www.wireshark.org/json/manuf.json';
+                
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Convert the object to array format
+                        const keys = Object.keys(data);
+                        ouiData = keys.map(key => ({
+                            prefix: key,
+                            name: data[key]
+                        }));
+                        
+                        // Sort by prefix
+                        ouiData.sort((a, b) => a.prefix.localeCompare(b.prefix));
+                        
+                        console.log(`Loaded ${ouiData.length} OUI entries`);
+                        isLoading = false;
+                        
+                        // Show a welcome message
+                        showWelcomeMessage();
+                    })
+                    .catch(error => {
+                        console.error('Error loading OUI data:', error);
+                        isLoading = false;
+                        
+                        // Show error message
+                        resultsPlaceholder.innerHTML = `
+                            <i class="fas fa-exclamation-triangle" style="color: #e74c3c;"></i>
+                            <h4>Error Loading Data</h4>
+                            <p>Could not load OUI database. Please check your connection and try again.</p>
+                        `;
+                    });
+            }
+            
+            // Show welcome message
+            function showWelcomeMessage() {
+                resultsPlaceholder.innerHTML = `
+                    <i class="fas fa-database" style="color: #1a6dcc;"></i>
+                    <h4>OUI Database Ready</h4>
+                    <p>Loaded ${ouiData.length.toLocaleString()} vendor prefixes. Enter a MAC address or vendor name to search.</p>
+                `;
+                resultsCount.textContent = `${ouiData.length.toLocaleString()} entries loaded`;
+            }
+            
+            // Perform the search
+            function performSearch() {
+                if (isLoading) {
+                    showMessage('Still loading database, please wait...', 'info');
+                    return;
+                }
+                
+                const query = searchInput.value.trim();
+                
+                if (!query) {
+                    showMessage('Please enter a MAC address or vendor name to search.', 'warning');
+                    return;
+                }
+                
+                // Parse the query
+                const queries = query.split(',').map(q => q.trim()).filter(q => q);
+                
+                // Search for matches
+                const matches = [];
+                
+                queries.forEach(q => {
+                    // Check if it's a MAC address
+                    const macRegex = /^[0-9a-f]{2}(?:[:.-]?[0-9a-f]{2}){2,7}$/i;
+                    const cleanMac = q.replace(/[:.-]/g, '').toLowerCase();
+                    
+                    if (macRegex.test(q)) {
+                        // Search by MAC prefix
+                        ouiData.forEach(entry => {
+                            const entryPrefix = entry.prefix.toLowerCase();
+                            if (cleanMac.startsWith(entryPrefix) || entryPrefix.startsWith(cleanMac)) {
+                                matches.push(entry);
                             }
                         });
-                        const o = document.getElementById("ffentry");
-                        o.oninput = p, console.log("Loaded " + Object.keys(t.data).length + " entries"), console.log("Created at", t.created_at)
-                    };
-                var r = new XMLHttpRequest;
-                r.open("GET", u, !0), r.onload = function() {
-                    r.status == 200 && m(JSON.parse(r.responseText))
-                }, r.send(null)
-            });
-        </script>
-    </div>
+                    } else {
+                        // Search by vendor name
+                        const vendorRegex = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+                        ouiData.forEach(entry => {
+                            if (vendorRegex.test(entry.name)) {
+                                matches.push(entry);
+                            }
+                        });
+                    }
+                });
+                
+                // Remove duplicates
+                const uniqueMatches = Array.from(new Set(matches.map(m => m.prefix)))
+                    .map(prefix => matches.find(m => m.prefix === prefix));
+                
+                // Display results
+                displayResults(uniqueMatches, queries);
+            }
+            
+            // Display search results
+            function displayResults(matches, queries) {
+                if (matches.length === 0) {
+                    resultsPlaceholder.style.display = 'flex';
+                    resultsTable.classList.remove('active');
+                    
+                    resultsPlaceholder.innerHTML = `
+                        <i class="fas fa-search" style="color: #94a3b8;"></i>
+                        <h4>No Matches Found</h4>
+                        <p>No vendor information found for "${queries.join(', ')}". Try a different MAC address or vendor name.</p>
+                    `;
+                    
+                    resultsCount.textContent = '0 matches';
+                    return;
+                }
+                
+                // Hide placeholder and show table
+                resultsPlaceholder.style.display = 'none';
+                resultsTable.classList.add('active');
+                
+                // Clear previous results
+                resultsTable.innerHTML = '';
+                
+                // Add results
+                matches.forEach(match => {
+                    const row = document.createElement('div');
+                    row.className = 'result-row';
+                    
+                    // Format the MAC prefix
+                    let formattedPrefix = match.prefix;
+                    if (formattedPrefix.length === 6) {
+                        // Format as 00:00:00
+                        formattedPrefix = formattedPrefix.replace(/(.{2})/g, '$1:').slice(0, -1);
+                    } else if (formattedPrefix.length === 7) {
+                        // Format as 00:00:00:00/28
+                        formattedPrefix = formattedPrefix.replace(/(.{2})/g, '$1:').slice(0, -1) + '0:00:00/28';
+                    } else if (formattedPrefix.length === 9) {
+                        // Format as 00:00:00:00:00/36
+                        formattedPrefix = formattedPrefix.replace(/(.{2})/g, '$1:').slice(0, -1) + '0:00/36';
+                    }
+                    
+                    row.innerHTML = `
+                        <div class="result-prefix">${formattedPrefix.toUpperCase()}</div>
+                        <div class="result-vendor">${match.name}</div>
+                    `;
+                    
+                    resultsTable.appendChild(row);
+                });
+                
+                // Update count
+                resultsCount.textContent = `${matches.length} match${matches.length !== 1 ? 'es' : ''}`;
+                
+                // Change container style when results are shown
+                const resultsContainer = document.getElementById('resultsContainer');
+                resultsContainer.style.backgroundColor = 'white';
+            }
+            
+            // Show a temporary message
+            function showMessage(text, type = 'info') {
+                // Create message element
+                const message = document.createElement('div');
+                message.className = `message message-${type}`;
+                message.textContent = text;
+                message.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    background-color: ${type === 'info' ? '#1a6dcc' : type === 'warning' ? '#e67e22' : '#e74c3c'};
+                    color: white;
+                    font-weight: 600;
+                    z-index: 1000;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    animation: slideIn 0.3s ease;
+                `;
+                
+                document.body.appendChild(message);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    message.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => {
+                        document.body.removeChild(message);
+                    }, 300);
+                }, 3000);
+            }
+            
+            // Add CSS for animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Initialize the application
+            init();
+        });
+    </script>
 </body>
-
 </html>
