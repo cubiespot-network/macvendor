@@ -1,0 +1,72 @@
+<html>
+
+<body>
+    <div class="p-8 undefined border border-border-card">
+        <section>
+            <div class="flex flex-col gap-4">
+                <h3 class="heading"> OUI Lookup Tool </h3>
+                <p class="paragraph text-text undefined size-sm">
+                    Easily search for vendor information using Organizationally Unique
+                    Identifiers (OUIs).
+                </p> <br> <label for="ffentry" data-astro-cid-aclj2cu6="true" class="relative flex flex-col gap-3 w-full label text-base text-text color-brighter" data-astro-cid-vbro6cyj="true"> <textarea id="ffentry" name="Search" placeholder="Search" type="text" data-astro-cid-aclj2cu6="true" class="input-input border border-border px-4 py-3 text-text placeholder:text-action-disabled-text disabled:bg-action-disabled disabled:border-action-disabled-text disabled:text-action-disabled-text rounded-lg"></textarea> </label>
+                <p class="paragraph text-text undefined size-md" id="matches" style="white-space: pre-line"> <i>No matches</i> </p>
+            </div>
+        </section>
+        <script type="module">
+            window.addEventListener("load", () => {
+                const u = "https://www.wireshark.org/json/manuf.json";
+                let i;
+                const f = function(t) {
+                        let n;
+                        return t = t.toLowerCase(), (n = /^[0-9a-f]{2}(?:[:.-]?[0-9a-f]{2}){2,7}$/.exec(t)) ? n[0].replace(/[:.-]/g, "") : null
+                    },
+                    l = function(t, n) {
+                        var s = t.length,
+                            o = t.replace(/../g, "$&:").replace(/:$/, "").toUpperCase();
+                        return s == 9 ? o += "0:00/36" : s == 7 && (o += "0:00:00/28"), o += " " + n, o
+                    },
+                    p = function() {
+                        const n = document.getElementById("ffentry").value.split(`
+`);
+                        var s = [],
+                            o = [],
+                            a;
+                        n.forEach(function(e) {
+                            e = e.replace(/^\s+|\s+$/g, "");
+                            var c = f(e);
+                            c ? s.push(c) : e && o.push(e)
+                        }), o.length && (a = new RegExp(o.map(function(e) {
+                            return e = e.replace(/[\^$\\.*+?()\[\]{}|]/g, "\\$&"), "(?:" + e + ")"
+                        }).join("|"), "i"));
+                        var d = i.filter(function(e) {
+                            return s.some(function(c) {
+                                return c.substring(0, e.prefix.length) === e.prefix.substring(0, c.length)
+                            }) || a && a.test(e.name)
+                        }).map(function(e) {
+                            return l(e.prefix, e.name)
+                        });
+                        n[0].length === 0 && (document.getElementById("matches").textContent = "(no matches)"), n[0].length > 0 && (document.getElementById("matches").textContent = d.join(`
+`) || "(no matches)")
+                    },
+                    m = function(t) {
+                        var n = t.data,
+                            s = Object.keys(n);
+                        s.sort(), i = s.map(function(a) {
+                            return {
+                                prefix: a,
+                                name: n[a]
+                            }
+                        });
+                        const o = document.getElementById("ffentry");
+                        o.oninput = p, console.log("Loaded " + Object.keys(t.data).length + " entries"), console.log("Created at", t.created_at)
+                    };
+                var r = new XMLHttpRequest;
+                r.open("GET", u, !0), r.onload = function() {
+                    r.status == 200 && m(JSON.parse(r.responseText))
+                }, r.send(null)
+            });
+        </script>
+    </div>
+</body>
+
+</html>
